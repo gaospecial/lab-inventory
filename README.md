@@ -56,5 +56,5 @@ npm run dev
 3. 设置环境变量（同 `.env.local` 文件）。
 4. 点击部署按钮，等待部署完成。
 5. 访问您的 Vercel 域名查看应用。
-6. 绑定自定义域名（https://lab.bio-spring.top）。
+6. 绑定自定义域名（如：<https://lab.bio-spring.top>）。
 
