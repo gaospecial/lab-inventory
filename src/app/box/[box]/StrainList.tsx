@@ -102,10 +102,10 @@ export default function StrainList({ strains }: { strains: Strain[] }) {
                       {strain.admin || '-'}
                     </td>
                     <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500 hidden lg:table-cell">
-                      {strain.created_at ? new Date(strain.created_at).toLocaleDateString() : '-'}
+                      {strain.created_at ? new Date(strain.created_at).toISOString().split('T')[0] : '-'}
                     </td>
                     <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500 hidden lg:table-cell">
-                      {strain.updated_at ? new Date(strain.updated_at).toLocaleDateString() : '-'}
+                      {strain.updated_at ? new Date(strain.updated_at).toISOString().split('T')[0] : '-'}
                     </td>
                   </tr>
                 ))
