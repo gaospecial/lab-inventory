@@ -12,12 +12,18 @@ export default function Home() {
             基于 Next.js 和 Supabase 的轻量级 LIMS。<br className="hidden sm:block" />
             专门设计用于菌株、质粒及文本信息的存储、查询与二维码溯源。
           </p>
-          <div className="pt-2">
+          <div className="flex flex-col gap-4 pt-2 sm:flex-row">
             <Link
               href="/strain/LB-001"
               className="inline-flex items-center text-sm font-semibold text-zinc-900 underline decoration-zinc-500 underline-offset-4 hover:decoration-zinc-900 dark:text-zinc-100 dark:decoration-zinc-500 dark:hover:decoration-zinc-100"
             >
               查看示例样品 (LB-001) →
+            </Link>
+            <Link
+              href="/box/box1"
+              className="inline-flex items-center text-sm font-semibold text-zinc-900 underline decoration-zinc-500 underline-offset-4 hover:decoration-zinc-900 dark:text-zinc-100 dark:decoration-zinc-500 dark:hover:decoration-zinc-100"
+            >
+              查看示例盒子 (box1) →
             </Link>
           </div>
         </div>
