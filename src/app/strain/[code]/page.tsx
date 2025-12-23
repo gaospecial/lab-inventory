@@ -120,6 +120,7 @@ export default async function StrainDetail(props: { params: Promise<{ code: stri
             value={`${process.env.NEXT_PUBLIC_APP_URL || ''}/strain/${strain.strain_code}`}
             label={strain.strain_code}
             subLabel={strain.name}
+            type="strain"
           />
         </div>
       </div>

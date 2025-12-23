@@ -61,6 +61,7 @@ export default async function BoxDetail(props: { params: Promise<{ box: string }
                value={`${process.env.NEXT_PUBLIC_APP_URL || ''}/box/${box}`}
                label={decodedBox}
                subLabel="扫描查看盒子内容"
+               type="box"
              />
           </div>
         </div>

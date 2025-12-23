@@ -8,9 +8,10 @@ interface QRCodeLabelProps {
   value: string;
   label: string;
   subLabel?: string;
+  type?: 'strain' | 'box';
 }
 
-export default function QRCodeLabel({ value, label, subLabel }: QRCodeLabelProps) {
+export default function QRCodeLabel({ value, label, subLabel, type = 'strain' }: QRCodeLabelProps) {
   const printRef = useRef<HTMLDivElement>(null);
 
   const handlePrint = () => {
@@ -24,7 +25,46 @@ export default function QRCodeLabel({ value, label, subLabel }: QRCodeLabelProps
     }
 
     // Get the SVG content
-    const svgContent = printContent.innerHTML;
+    const svgElement = printContent.querySelector('svg');
+    const svgHtml = svgElement ? svgElement.outerHTML : '';
+
+    let printBody = '';
+
+    if (type === 'strain') {
+      // Strain: Rectangular (Tube) + Circular (Cap)
+      printBody = `
+        <div class="print-page">
+          <!-- Rectangular Label for Tube Wall (e.g., 30mm x 20mm or similar small size) -->
+          <div class="label-rect">
+            <div class="qr-code-rect">${svgHtml}</div>
+            <div class="info-rect">
+              <div class="label-main">${label}</div>
+              <div class="label-sub">${subLabel || ''}</div>
+            </div>
+          </div>
+
+          <!-- Circular Label for Tube Cap (e.g., 10mm-12mm diameter) -->
+          <div class="label-circle">
+            <div class="circle-content">
+              <div class="circle-text">${label}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      // Box: Large Rectangular
+      printBody = `
+         <div class="print-page">
+          <div class="label-box">
+            <div class="qr-code-box">${svgHtml}</div>
+            <div class="info-box">
+              <div class="box-title">${label}</div>
+              <div class="box-sub">${subLabel || ''}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
 
     const html = `
       <!DOCTYPE html>
@@ -38,49 +78,115 @@ export default function QRCodeLabel({ value, label, subLabel }: QRCodeLabelProps
             }
             body {
               font-family: system-ui, -apple-system, sans-serif;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              height: 100vh;
               margin: 0;
+              padding: 20px;
             }
-            .label-container {
-              border: 1px solid #000;
-              padding: 10px;
+            
+            .print-page {
               display: flex;
               flex-direction: column;
+              gap: 20px;
+              align-items: flex-start;
+            }
+
+            /* Strain Rectangular Label (Tube Wall) */
+            /* Dimensions: approx 40mm x 15mm depending on paper, adjusted for CSS px */
+            .label-rect {
+              width: 150px; 
+              height: 60px;
+              border: 1px dashed #ccc; /* Dashed border for cutting guide if needed, or remove for thermal printer */
+              display: flex;
               align-items: center;
-              text-align: center;
-              width: fit-content;
+              padding: 4px;
+              box-sizing: border-box;
+              page-break-inside: avoid;
             }
-            .qr-code {
-              width: 100px;
-              height: 100px;
-              margin-bottom: 5px;
+            .qr-code-rect {
+              width: 50px;
+              height: 50px;
+              flex-shrink: 0;
             }
-            .qr-code svg {
+            .qr-code-rect svg {
               width: 100%;
               height: 100%;
             }
-            .label-text {
+            .info-rect {
+              margin-left: 8px;
+              overflow: hidden;
+            }
+            .label-main {
               font-weight: bold;
               font-size: 14px;
-              margin-bottom: 2px;
+              white-space: nowrap;
             }
-            .sub-label-text {
+            .label-sub {
               font-size: 10px;
-              color: #000;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
             }
+
+            /* Strain Circular Label (Cap) */
+            /* Dimensions: approx 12mm diameter */
+            .label-circle {
+              width: 48px; /* ~12-13mm */
+              height: 48px;
+              border: 1px dashed #ccc;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              text-align: center;
+              page-break-inside: avoid;
+            }
+            .circle-content {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+            .circle-text {
+              font-size: 10px;
+              font-weight: bold;
+              line-height: 1;
+              word-break: break-all;
+            }
+
+            /* Box Label (Large Rectangular) */
+            .label-box {
+              width: 300px;
+              height: 150px;
+              border: 2px solid #000;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              padding: 10px;
+              box-sizing: border-box;
+              text-align: center;
+            }
+            .qr-code-box {
+              width: 80px;
+              height: 80px;
+              margin-bottom: 10px;
+            }
+            .qr-code-box svg {
+              width: 100%;
+              height: 100%;
+            }
+            .box-title {
+              font-size: 24px;
+              font-weight: bold;
+              margin-bottom: 5px;
+            }
+            .box-sub {
+              font-size: 14px;
+              color: #555;
+            }
+
           </style>
         </head>
         <body>
-          <div class="label-container">
-            <div class="qr-code">
-              ${svgContent}
-            </div>
-            <div class="label-text">${label}</div>
-            ${subLabel ? `<div class="sub-label-text">${subLabel}</div>` : ''}
-          </div>
+          ${printBody}
           <script>
             window.onload = () => {
               window.print();
@@ -108,6 +214,7 @@ export default function QRCodeLabel({ value, label, subLabel }: QRCodeLabelProps
         </div>
         <p className="mt-2 font-bold text-gray-900">{label}</p>
         {subLabel && <p className="text-sm text-gray-500">{subLabel}</p>}
+        <p className="text-xs text-gray-400 mt-1 uppercase">{type === 'box' ? '盒子标签' : '菌株标签 (管壁+管盖)'}</p>
       </div>
       
       <button
