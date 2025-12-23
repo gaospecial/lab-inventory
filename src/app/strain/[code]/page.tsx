@@ -1,7 +1,8 @@
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/utils/supabase/server';
 import { notFound } from 'next/navigation';
-import { Beaker, MapPin, FileText, Calendar, Tag, User, ShieldCheck, Clock } from 'lucide-react';
+import { Beaker, MapPin, FileText, Calendar, Tag, User, ShieldCheck, Clock, Edit } from 'lucide-react';
 import QRCodeLabel from '@/components/QRCodeLabel';
+import Link from 'next/link';
 
 // Define a type for our strain data
 type Strain = {
@@ -20,6 +21,7 @@ type Strain = {
 export default async function StrainDetail(props: { params: Promise<{ code: string }> }) {
   const params = await props.params;
   const { code } = params;
+  const supabase = await createClient();
 
   const { data: strain, error } = await supabase
     .from('strains')
@@ -30,6 +32,9 @@ export default async function StrainDetail(props: { params: Promise<{ code: stri
   if (error || !strain) {
     return notFound();
   }
+
+  // Check for logged in user
+  const { data: { user } } = await supabase.auth.getUser();
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
@@ -44,7 +49,18 @@ export default async function StrainDetail(props: { params: Promise<{ code: stri
                   编号: {strain.strain_code}
                 </span>
               </div>
-              <Beaker className="text-blue-200 h-12 w-12" />
+              <div className="flex flex-col items-end gap-2">
+                <Beaker className="text-blue-200 h-12 w-12" />
+                {user && (
+                  <Link 
+                    href={`/strain/${strain.strain_code}/edit`}
+                    className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
+                  >
+                    <Edit size={16} />
+                    编辑
+                  </Link>
+                )}
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
               <div className="flex items-start space-x-3">
