@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { Beaker, MapPin, FileText, Calendar, Tag, User, ShieldCheck, Clock, Edit } from 'lucide-react';
 import QRCodeLabel from '@/components/QRCodeLabel';
 import Link from 'next/link';
+import ReactMarkdown from 'react-markdown';
 
 // Define a type for our strain data
 type Strain = {
@@ -120,8 +121,12 @@ export default async function StrainDetail(props: { params: Promise<{ code: stri
               <FileText className="text-gray-400 mt-1" size={20} />
               <div className="flex-1">
                 <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">详细描述 / 基因型</h3>
-                <div className="bg-gray-50 p-4 rounded-lg text-gray-700 leading-relaxed whitespace-pre-wrap">
-                  {strain.description || "暂无描述信息"}
+                <div className="bg-gray-50 p-4 rounded-lg text-gray-700 leading-relaxed prose prose-sm max-w-none">
+                  {strain.description ? (
+                    <ReactMarkdown>{strain.description}</ReactMarkdown>
+                  ) : (
+                    "暂无描述信息"
+                  )}
                 </div>
               </div>
             </div>

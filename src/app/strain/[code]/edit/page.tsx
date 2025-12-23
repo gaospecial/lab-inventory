@@ -62,7 +62,7 @@ export default async function EditStrainPage(props: { params: Promise<{ code: st
                   id="name"
                   defaultValue={strain.name}
                   required
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2 text-gray-900"
                 />
               </div>
 
@@ -75,7 +75,7 @@ export default async function EditStrainPage(props: { params: Promise<{ code: st
                   name="type"
                   id="type"
                   defaultValue={strain.type}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2 text-gray-900"
                 />
               </div>
 
@@ -88,7 +88,7 @@ export default async function EditStrainPage(props: { params: Promise<{ code: st
                   name="location"
                   id="location"
                   defaultValue={strain.location}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2 text-gray-900"
                 />
               </div>
 
@@ -101,7 +101,7 @@ export default async function EditStrainPage(props: { params: Promise<{ code: st
                   name="owner"
                   id="owner"
                   defaultValue={strain.owner}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2 text-gray-900"
                 />
               </div>
 
@@ -114,7 +114,7 @@ export default async function EditStrainPage(props: { params: Promise<{ code: st
                   name="admin"
                   id="admin"
                   defaultValue={strain.admin}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2 text-gray-900"
                 />
               </div>
 
@@ -127,7 +127,7 @@ export default async function EditStrainPage(props: { params: Promise<{ code: st
                   id="description"
                   rows={6}
                   defaultValue={strain.description}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2 font-mono"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm border p-2 font-mono text-gray-900"
                 />
               </div>
             </div>
