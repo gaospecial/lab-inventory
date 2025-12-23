@@ -25,3 +25,36 @@
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### 2. 安装依赖
+
+使用 npm 或 yarn 安装项目依赖：
+
+```bash
+npm install
+```
+
+### 3. 运行开发服务器
+
+启动本地开发服务器：
+
+```bash
+npm run dev
+```
+
+### 4. 访问应用
+
+打开浏览器，访问 [http://localhost:3000](http://localhost:3000) 查看应用。
+
+## 📦 部署
+
+将项目部署到 Vercel：
+
+1. 登录 [Vercel](https://vercel.com/) 并创建一个新项目。
+2. 连接您的 GitHub 仓库。
+3. 设置环境变量（同 `.env.local` 文件）。
+4. 点击部署按钮，等待部署完成。
+5. 访问您的 Vercel 域名查看应用。
+6. 绑定自定义域名（https://lab.bio-spring.top）。
+
