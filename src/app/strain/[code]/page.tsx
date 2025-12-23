@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
-import { Beaker, MapPin, FileText, Calendar } from 'lucide-react';
+import { Beaker, MapPin, FileText, Calendar, Tag, User, ShieldCheck, Clock } from 'lucide-react';
 
 // Define a type for our strain data
 type Strain = {
@@ -9,6 +9,10 @@ type Strain = {
   location: string;
   created_at: string;
   description: string;
+  type: string;
+  updated_at: string;
+  owner: string;
+  admin: string;
 };
 
 // Server Component
@@ -42,18 +46,53 @@ export default async function StrainDetail(props: { params: Promise<{ code: stri
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
             <div className="flex items-start space-x-3">
-              <MapPin className="text-gray-400 mt-1" size={20} />
+              <Tag className="text-gray-400 mt-1" size={20} />
               <div>
-                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">存储位置</h3>
-                <p className="text-gray-900 font-medium">{strain.location}</p>
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">样品类型</h3>
+                <p className="text-gray-900 font-medium">{strain.type || '-'}</p>
               </div>
             </div>
+
+            <div className="flex items-start space-x-3">
+              <MapPin className="text-gray-400 mt-1" size={20} />
+              <div>
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">存放位置</h3>
+                <p className="text-gray-900 font-medium">{strain.location || '-'}</p>
+              </div>
+            </div>
+
+            <div className="flex items-start space-x-3">
+              <User className="text-gray-400 mt-1" size={20} />
+              <div>
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">拥有人</h3>
+                <p className="text-gray-900 font-medium">{strain.owner || '-'}</p>
+              </div>
+            </div>
+
+            <div className="flex items-start space-x-3">
+              <ShieldCheck className="text-gray-400 mt-1" size={20} />
+              <div>
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">管理员</h3>
+                <p className="text-gray-900 font-medium">{strain.admin || '-'}</p>
+              </div>
+            </div>
+
             <div className="flex items-start space-x-3">
               <Calendar className="text-gray-400 mt-1" size={20} />
               <div>
-                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">入库日期</h3>
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">创建时间</h3>
                 <p className="text-gray-900 font-medium text-sm">
-                   {new Date(strain.created_at).toLocaleDateString()}
+                   {strain.created_at ? new Date(strain.created_at).toLocaleString() : '-'}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start space-x-3">
+              <Clock className="text-gray-400 mt-1" size={20} />
+              <div>
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">更新时间</h3>
+                <p className="text-gray-900 font-medium text-sm">
+                   {strain.updated_at ? new Date(strain.updated_at).toLocaleString() : '-'}
                 </p>
               </div>
             </div>
