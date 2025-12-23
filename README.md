@@ -1,36 +1,27 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧬 实验室材料仓库管理系统 (Lab Inventory)
 
-## Getting Started
+这是一个基于 **Next.js 15** 和 **Supabase** 构建的轻量级实验室信息管理系统 (LIMS)。专门设计用于菌株、质粒及文本信息的存储、查询与二维码溯源。
 
-First, run the development server:
+## ✨ 核心功能
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **样品数字化**: 记录菌株名称、编号、存放位置及基因型等关键信息。
+- **唯一溯源**: 自动为每个样品生成动态详情页，支持私有域名绑定。
+- **扫码直达**: 配合二维码标签，手机扫码即可查看存放位置及详细说明。
+- **无服务器架构**: 基于 Vercel + Supabase，零成本运维，高可用性。
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 技术栈
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **前端**: [Next.js](https://nextjs.org/) (App Router, TypeScript)
+- **样式**: [Tailwind CSS](https://tailwindcss.com/)
+- **数据库**: [Supabase](https://supabase.com/) (PostgreSQL)
+- **图标**: [Lucide React](https://lucide.dev/)
+- **部署**: [Vercel](https://vercel.com/)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ 快速开始
 
-## Learn More
+### 1. 环境准备
+在项目根目录创建 `.env.local` 文件，并填入您的 Supabase 凭证：
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
