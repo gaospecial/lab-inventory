@@ -9,7 +9,7 @@ export default function Home() {
             实验室材料仓库管理系统
           </h1>
           <p className="text-xl leading-relaxed text-zinc-600 dark:text-zinc-400">
-            基于 Next.js 和 Supabase 的轻量级 LIMS。<br className="hidden sm:block" />
+            基于 Next.js 16 和 Supabase 的轻量级 LIMS。<br className="hidden sm:block" />
             专门设计用于菌株、质粒及文本信息的存储、查询与二维码溯源。
           </p>
           <div className="flex flex-col gap-4 pt-2 sm:flex-row">
@@ -35,16 +35,19 @@ export default function Home() {
             </h2>
             <ul className="space-y-4 text-zinc-600 dark:text-zinc-400">
               <li>
-                <strong className="font-medium text-zinc-900 dark:text-zinc-200">样品数字化:</strong> 记录菌株名称、编号、存放位置及基因型等关键信息。
+                <strong className="font-medium text-zinc-900 dark:text-zinc-200">样品数字化:</strong> 记录菌株名称、编号、存放位置、拥有人及基因型等关键信息。
               </li>
               <li>
-                <strong className="font-medium text-zinc-900 dark:text-zinc-200">唯一溯源:</strong> 自动为每个样品生成动态详情页，支持私有域名绑定。
+                <strong className="font-medium text-zinc-900 dark:text-zinc-200">Markdown 支持:</strong> 样品详细描述支持 Markdown 语法渲染，适合记录复杂备注。
               </li>
               <li>
-                <strong className="font-medium text-zinc-900 dark:text-zinc-200">扫码直达:</strong> 配合二维码标签，手机扫码即可查看存放位置及详细说明。
+                <strong className="font-medium text-zinc-900 dark:text-zinc-200">盒子/位置视图:</strong> 支持按存放位置查看该位置下的所有样品，配合二维码标签使用。
               </li>
               <li>
-                <strong className="font-medium text-zinc-900 dark:text-zinc-200">无服务器架构:</strong> 基于 Vercel + Supabase，零成本运维，高可用性。
+                <strong className="font-medium text-zinc-900 dark:text-zinc-200">扫码直达:</strong> 配合二维码标签，手机扫码即可查看样品详情或盒子列表。
+              </li>
+              <li>
+                <strong className="font-medium text-zinc-900 dark:text-zinc-200">权限管理:</strong> 内置登录认证系统，确保只有授权用户可以编辑样品信息。
               </li>
             </ul>
           </section>
@@ -54,11 +57,13 @@ export default function Home() {
               🚀 技术栈
             </h2>
             <ul className="list-disc pl-5 space-y-2 text-zinc-600 dark:text-zinc-400">
-              <li>Next.js (App Router, TypeScript)</li>
-              <li>Tailwind CSS</li>
-              <li>Supabase (PostgreSQL)</li>
-              <li>Lucide React</li>
-              <li>Vercel</li>
+              <li>Next.js 16 (App Router, React 19)</li>
+              <li>Tailwind CSS v4</li>
+              <li>Supabase (PostgreSQL, Auth)</li>
+              <li>React Markdown (富文本渲染)</li>
+              <li>React QR Code (二维码生成)</li>
+              <li>Lucide React (图标库)</li>
+              <li>Vercel (部署)</li>
             </ul>
           </section>
         </div>
