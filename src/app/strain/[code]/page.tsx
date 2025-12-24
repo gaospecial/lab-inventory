@@ -1,7 +1,7 @@
 import { createClient } from '@/utils/supabase/server';
 import { notFound } from 'next/navigation';
 import { Beaker, MapPin, FileText, Calendar, Tag, User, ShieldCheck, Clock, Edit } from 'lucide-react';
-import QRCodeLabel from '@/components/QRCodeLabel';
+import DataMatrixLabel from '@/components/DataMatrixLabel';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 
@@ -137,10 +137,10 @@ export default async function StrainDetail(props: { params: Promise<{ code: stri
         </div>
         
         <div className="w-full md:w-64">
-          <QRCodeLabel
+          <DataMatrixLabel
             value={`${process.env.NEXT_PUBLIC_APP_URL || ''}/strain/${strain.strain_code}`}
             label={strain.strain_code}
-            subLabel={strain.name}
+            subLabel={strain.strain_name || undefined}
             type="strain"
           />
         </div>

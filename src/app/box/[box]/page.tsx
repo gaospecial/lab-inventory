@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabase';
 import { Archive } from 'lucide-react';
 import StrainList from './StrainList';
-import QRCodeLabel from '@/components/QRCodeLabel';
+import DataMatrixLabel from '@/components/DataMatrixLabel';
 
 export default async function BoxDetail(props: { params: Promise<{ box: string }> }) {
   const params = await props.params;
@@ -57,10 +57,10 @@ export default async function BoxDetail(props: { params: Promise<{ box: string }
           </div>
           
           <div className="w-full md:w-56 shrink-0">
-             <QRCodeLabel
+             <DataMatrixLabel
                value={`${process.env.NEXT_PUBLIC_APP_URL || ''}/box/${box}`}
-               label={decodedBox}
-               subLabel="扫描查看盒子内容"
+               label={box}
+               subLabel={`${strains.length} 个样品`}
                type="box"
              />
           </div>
