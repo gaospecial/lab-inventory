@@ -164,7 +164,7 @@ export default async function StrainDetail(props: { params: Promise<{ code: stri
         
         <div className="w-full md:w-64">
           <DataMatrixLabel
-            value={`strain/${strain.strain_code}`}
+            value={strain.strain_code}
             label={strain.strain_code}
             subLabel={strain.strain_name || undefined}
             type="strain"
