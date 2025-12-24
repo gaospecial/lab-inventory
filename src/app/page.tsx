@@ -1,4 +1,10 @@
 import Link from "next/link";
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "首页 - 实验室材料仓库管理系统",
+  description: "基于 Next.js 16 和 Supabase 的轻量级 LIMS",
+};
 
 export default function Home() {
   return (

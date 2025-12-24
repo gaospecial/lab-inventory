@@ -18,6 +18,32 @@ type Strain = {
   admin: string;
 };
 
+import { Metadata } from 'next';
+
+// Generate dynamic metadata
+export async function generateMetadata(props: { params: Promise<{ code: string }> }): Promise<Metadata> {
+  const params = await props.params;
+  const { code } = params;
+  const supabase = await createClient();
+
+  const { data: strain } = await supabase
+    .from('strains')
+    .select('name, strain_code')
+    .eq('strain_code', code)
+    .single();
+
+  if (!strain) {
+    return {
+      title: 'Strain Not Found',
+    };
+  }
+
+  return {
+    title: `${strain.name} (${strain.strain_code}) - Lab Inventory`,
+    description: `Details for strain ${strain.name}`,
+  };
+}
+
 // Server Component
 export default async function StrainDetail(props: { params: Promise<{ code: string }> }) {
   const params = await props.params;

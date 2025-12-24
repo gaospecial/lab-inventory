@@ -2,6 +2,18 @@ import { supabase } from '@/lib/supabase';
 import { Archive } from 'lucide-react';
 import StrainList from './StrainList';
 import DataMatrixLabel from '@/components/DataMatrixLabel';
+import { Metadata } from 'next';
+
+export async function generateMetadata(props: { params: Promise<{ box: string }> }): Promise<Metadata> {
+  const params = await props.params;
+  const { box } = params;
+  const decodedBox = decodeURIComponent(box);
+
+  return {
+    title: `${decodedBox} - Box Details - Lab Inventory`,
+    description: `Inventory details for box ${decodedBox}`,
+  };
+}
 
 export default async function BoxDetail(props: { params: Promise<{ box: string }> }) {
   const params = await props.params;
