@@ -58,7 +58,7 @@ export default async function BoxDetail(props: { params: Promise<{ box: string }
           
           <div className="w-full md:w-56 shrink-0">
              <DataMatrixLabel
-               value={`${process.env.NEXT_PUBLIC_APP_URL || ''}/box/${box}`}
+               value={`box/${box}`}
                label={box}
                subLabel={`${strains.length} 个样品`}
                type="box"
