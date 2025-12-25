@@ -250,6 +250,9 @@ export default async function StrainDetail(props: { params: Promise<{ code: stri
                         value={strain.strain_code}
                         label={strain.strain_code}
                         subLabel={strain.name_chinese}
+                        latinName={strain.name_latin}
+                        isolatedBy={strain.isolated_by}
+                        collectionDate={strain.collection_date}
                         type="strain"
                     />
                 </div>

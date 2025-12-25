@@ -8,10 +8,21 @@ interface DataMatrixLabelProps {
   value: string;
   label: string;
   subLabel?: string;
+  latinName?: string;
+  isolatedBy?: string;
+  collectionDate?: string;
   type?: 'strain' | 'box';
 }
 
-export default function DataMatrixLabel({ value, label, subLabel, type = 'strain' }: DataMatrixLabelProps) {
+export default function DataMatrixLabel({ 
+  value, 
+  label, 
+  subLabel, 
+  latinName, 
+  isolatedBy, 
+  collectionDate, 
+  type = 'strain' 
+}: DataMatrixLabelProps) {
   const printRef = useRef<HTMLDivElement>(null);
   const [svgContent, setSvgContent] = useState<string>('');
 
@@ -52,19 +63,25 @@ export default function DataMatrixLabel({ value, label, subLabel, type = 'strain
       // Strain: Rectangular (Tube) + Circular (Cap)
       printBody = `
         <div class="print-page">
-          <!-- Rectangular Label for Tube Wall (e.g., 30mm x 20mm or similar small size) -->
+          <!-- Rectangular Label for Tube Wall -->
           <div class="label-rect">
             <div class="qr-code-rect">${svgHtml}</div>
             <div class="info-rect">
+              <div class="label-latin">${latinName || ''}</div>
               <div class="label-main">${label}</div>
-              <div class="label-sub">${subLabel || ''}</div>
+              <div class="label-meta">
+                 ${isolatedBy ? `<span>${isolatedBy}</span>` : ''}
+                 ${(isolatedBy && collectionDate) ? `<span class="separator">|</span>` : ''}
+                 ${collectionDate ? `<span>${collectionDate}</span>` : ''}
+              </div>
             </div>
           </div>
 
-          <!-- Circular Label for Tube Cap (e.g., 10mm-12mm diameter) -->
+          <!-- Circular Label for Tube Cap -->
           <div class="label-circle">
             <div class="circle-content">
-              <div class="circle-text">${label}</div>
+              <div class="circle-qr">${svgHtml}</div>
+              <div class="circle-text">${label.replace(/^MGSC\s+/, '')}</div>
             </div>
           </div>
         </div>
@@ -108,65 +125,99 @@ export default function DataMatrixLabel({ value, label, subLabel, type = 'strain
             }
 
             /* Strain Rectangular Label (Tube Wall) */
-            /* Dimensions: approx 40mm x 15mm depending on paper, adjusted for CSS px */
             .label-rect {
-              width: 150px; 
-              height: 60px;
-              border: 1px dashed #ccc; /* Dashed border for cutting guide if needed, or remove for thermal printer */
+              width: 40mm;
+              height: 15mm;
+              border: 1px dashed #eee; 
               display: flex;
               align-items: center;
-              padding: 4px;
+              padding: 1mm;
               box-sizing: border-box;
               page-break-inside: avoid;
+              font-family: Arial, sans-serif;
             }
             .qr-code-rect {
-              width: 50px;
-              height: 50px;
+              width: 10mm;
+              height: 10mm;
               flex-shrink: 0;
+              margin-right: 2px;
             }
             .qr-code-rect svg {
               width: 100%;
               height: 100%;
             }
             .info-rect {
-              margin-left: 8px;
+              flex: 1;
               overflow: hidden;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              line-height: 1;
             }
             .label-main {
               font-weight: bold;
-              font-size: 14px;
-              white-space: nowrap;
-            }
-            .label-sub {
-              font-size: 10px;
+              font-size: 8pt;
               white-space: nowrap;
               overflow: hidden;
               text-overflow: ellipsis;
             }
+            .label-latin {
+              font-size: 7pt;
+              font-style: italic;
+              font-weight: bold;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              margin-bottom: 1px;
+            }
+            .label-meta {
+              font-size: 5pt;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              color: #333;
+            }
+            .separator {
+              margin: 0 1px;
+              color: #ccc;
+            }
 
             /* Strain Circular Label (Cap) */
-            /* Dimensions: approx 12mm diameter */
             .label-circle {
-              width: 48px; /* ~12-13mm */
-              height: 48px;
-              border: 1px dashed #ccc;
+              width: 13mm;
+              height: 13mm;
+              border: 1px dashed #eee;
               border-radius: 50%;
               display: flex;
               align-items: center;
               justify-content: center;
               text-align: center;
               page-break-inside: avoid;
+              margin-top: 5mm;
+              font-family: Arial, sans-serif;
             }
             .circle-content {
               display: flex;
+              flex-direction: column;
               align-items: center;
               justify-content: center;
+              width: 100%;
+              height: 100%;
+            }
+            .circle-qr {
+              width: 5mm;
+              height: 5mm;
+              margin-bottom: 0.2mm;
+            }
+            .circle-qr svg {
+              width: 100%;
+              height: 100%;
             }
             .circle-text {
-              font-size: 10px;
+              font-size: 4pt;
               font-weight: bold;
               line-height: 1;
-              word-break: break-all;
+              white-space: nowrap;
             }
 
             /* Box Label (Large Rectangular) */
@@ -221,16 +272,16 @@ export default function DataMatrixLabel({ value, label, subLabel, type = 'strain
 
   return (
     <div className="flex flex-col items-center p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-      <div className="mb-4 text-center">
-        <div ref={printRef} className="bg-white p-2 inline-block">
+      <div className="mb-2 text-center">
+        <div ref={printRef} className="bg-white p-1 inline-block">
           <div 
             dangerouslySetInnerHTML={{ __html: svgContent }} 
-            className="w-32 h-32 flex items-center justify-center"
+            className="w-24 h-24 flex items-center justify-center"
           />
         </div>
-        <p className="mt-2 font-bold text-gray-900">{label}</p>
-        {subLabel && <p className="text-sm text-gray-500">{subLabel}</p>}
-        <p className="text-xs text-gray-400 mt-1 uppercase">{type === 'box' ? '盒子标签' : '菌株标签 (管壁+管盖)'}</p>
+        <p className="mt-1 font-bold text-gray-900 leading-tight">{label}</p>
+        {subLabel && <p className="text-sm text-gray-500 leading-tight">{subLabel}</p>}
+        <p className="text-xs text-gray-400 mt-1 uppercase">{type === 'box' ? '盒子标签' : '菌株标签'}</p>
       </div>
       
       <button
