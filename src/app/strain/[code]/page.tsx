@@ -50,12 +50,13 @@ import { Metadata } from 'next';
 export async function generateMetadata(props: { params: Promise<{ code: string }> }): Promise<Metadata> {
   const params = await props.params;
   const { code } = params;
+  const decodedCode = decodeURIComponent(code);
   const supabase = await createClient();
 
   const { data: strain } = await supabase
     .from('mgsc_germplasm')
     .select('name_chinese, name_latin, strain_code')
-    .eq('strain_code', code)
+    .eq('strain_code', decodedCode)
     .single();
 
   if (!strain) {
