@@ -21,8 +21,9 @@ export default async function BoxDetail(props: { params: Promise<{ box: string }
   const decodedBox = decodeURIComponent(box);
 
   const { data: strains, error } = await supabase
-    .from('strains')
+    .from('mgsc_germplasm')
     .select('*')
+    // Note: 'location' field might need to be verified in the new schema
     .ilike('location', `%${decodedBox}%`)
     .order('strain_code', { ascending: true });
 

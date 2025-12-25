@@ -18,7 +18,7 @@ export default async function EditStrainPage(props: { params: Promise<{ code: st
   }
 
   const { data: strain, error } = await supabase
-    .from('strains')
+    .from('mgsc_germplasm')
     .select('*')
     .eq('strain_code', code)
     .single()

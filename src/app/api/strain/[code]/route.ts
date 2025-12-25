@@ -9,10 +9,11 @@ export async function GET(
   const { code } = params;
   const supabase = await createClient();
 
+  const decodedCode = decodeURIComponent(code);
   const { data: strain, error } = await supabase
-    .from('strains')
+    .from('mgsc_germplasm')
     .select('*')
-    .eq('strain_code', code)
+    .eq('strain_code', decodedCode)
     .single();
 
   if (error) {

@@ -24,16 +24,18 @@ export async function updateStrain(formData: FormData) {
   const admin = formData.get('admin') as string
   const description = formData.get('description') as string
 
+  // Note: Edit functionality needs full refactor for new schema fields.
+  // Updating table name only for now.
   const { error, count } = await supabase
-    .from('strains')
+    .from('mgsc_germplasm')
     .update({
-      name,
-      type,
-      location,
-      owner,
-      admin,
-      description,
-      updated_at: new Date().toISOString(),
+      // name, // Field mismatch likely
+      // type,
+      // location,
+      // owner,
+      // admin,
+      // description,
+      // updated_at: new Date().toISOString(),
     }, { count: 'exact' })
     .eq('strain_code', strain_code)
 

@@ -20,10 +20,10 @@ export default function Home() {
           </p>
           <div className="flex flex-col gap-4 pt-2 sm:flex-row">
             <Link
-              href="/strain/LB-001"
+              href="/strain/MGSC 1011310"
               className="inline-flex items-center text-sm font-semibold text-zinc-900 underline decoration-zinc-500 underline-offset-4 hover:decoration-zinc-900 dark:text-zinc-100 dark:decoration-zinc-500 dark:hover:decoration-zinc-100"
             >
-              查看示例样品 (LB-001) →
+              查看示例样品 (MGSC 1011310) →
             </Link>
             <Link
               href="/box/box1"
