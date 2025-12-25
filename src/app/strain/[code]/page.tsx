@@ -118,7 +118,7 @@ export default async function StrainDetail(props: { params: Promise<{ code: stri
             {/* Header */}
             <div className="flex justify-between items-start mb-8 border-b border-gray-100 pb-6">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+                <h1 className="text-3xl font-bold text-gray-900 flex flex-col items-start gap-1">
                   {strain.name_chinese}
                   <span className="text-xl font-normal text-gray-500 italic">({strain.name_latin})</span>
                 </h1>
