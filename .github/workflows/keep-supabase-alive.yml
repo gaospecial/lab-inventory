@@ -1,0 +1,15 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    # 每天 UTC 00:00 (北京时间 08:00) 运行
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 允许在 GitHub 网页上手动点击按钮触发测试
+
+jobs:
+  ping-site:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping URL to keep Supabase active
+        # 使用 curl 访问页面，模拟用户请求，触发数据库查询
+        run: curl -I https://lab.bio-spring.top/strain/MGSC%201011310
