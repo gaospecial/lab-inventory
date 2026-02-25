@@ -57,15 +57,53 @@ if [ ${#DB_PASSWORD} -lt 8 ]; then
   exit 1
 fi
 
-# 创建用户和数据库
+# 创建用户和数据库，直接使用 DB_USER 作为数据库所有者
 sudo -u postgres psql <<EOF
-CREATE USER $DB_USER WITH PASSWORD '$DB_PASSWORD';
-CREATE DATABASE $DB_NAME OWNER $DB_USER;
-GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;
+-- 创建用户（如果不存在）
+DO \$\$ 
+BEGIN
+  IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = '$DB_USER') THEN
+    CREATE USER $DB_USER WITH PASSWORD '$DB_PASSWORD';
+  END IF;
+END
+\$\$;
+
+-- 创建数据库（如果不存在），使用 DB_USER 作为所有者
+DO \$\$
+BEGIN
+  IF NOT EXISTS (SELECT FROM pg_database WHERE datname = '$DB_NAME') THEN
+    CREATE DATABASE $DB_NAME OWNER $DB_USER;
+  ELSE
+    -- 如果数据库已存在，修改所有者为 DB_USER
+    ALTER DATABASE $DB_NAME OWNER TO $DB_USER;
+  END IF;
+END
+\$\$;
+
+-- 连接到数据库，设置权限
+\c $DB_NAME
+
+-- 授予 schema 权限
+GRANT ALL ON SCHEMA public TO $DB_USER;
+ALTER SCHEMA public OWNER TO $DB_USER;
+
+-- 授予序列权限（如果存在）
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO $DB_USER;
+
+-- 授予表权限（如果存在）
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO $DB_USER;
+
+-- 设置默认权限，使 DB_USER 自动拥有未来创建的对象的所有权
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO $DB_USER;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO $DB_USER;
+ALTER DEFAULT PRIVILEGES FOR ROLE $DB_USER IN SCHEMA public GRANT ALL ON TABLES TO $DB_USER;
+ALTER DEFAULT PRIVILEGES FOR ROLE $DB_USER IN SCHEMA public GRANT ALL ON SEQUENCES TO $DB_USER;
+
 \q
 EOF
 
 echo "✓ 数据库和用户创建完成"
+echo "✓ 数据库 $DB_NAME 所有者是 $DB_USER"
 
 # 配置 PostgreSQL 允许远程连接
 echo "=== 4. 配置远程访问 ==="
@@ -144,18 +182,17 @@ echo "   - 登录阿里云控制台 → ECS → 安全组"
 echo "   - 添加规则: 允许 5432 端口 (PostgreSQL)"
 echo "   - 建议限制源 IP（仅允许 Netlify 出口 IP）"
 echo ""
-echo "2. SSL 加密:"
+echo "2. 初始化数据库表："
+echo "   执行以下命令（以 $DB_USER 用户身份）："
+echo ""
+echo "   sudo -u $DB_USER psql -d $DB_NAME -f /path/to/init-db.sql"
+echo ""
+echo "   或使用："
+echo "   PGPASSWORD='$DB_PASSWORD' psql -h localhost -U $DB_USER -d $DB_NAME -f init-db.sql"
+echo ""
+echo "3. SSL 加密:"
 echo "   - 已启用 SSL 支持"
 echo "   - 生产环境建议使用 SSL 连接"
 echo ""
-echo "3. 防火墙已开放 5432 端口"
-echo ""
-echo "4. 下一步:"
-echo "   - 上传并执行 init-db.sql 创建表结构"
-echo "   - 配置 Netlify 环境变量:"
-echo ""
-if [ "$DOMAIN" != "localhost" ]; then
-  echo "   DATABASE_URL=postgresql://$DB_USER:$DB_PASSWORD@$DOMAIN:5432/$DB_NAME"
-fi
-echo "   DATABASE_URL=postgresql://$DB_USER:$DB_PASSWORD@$PUBLIC_IP:5432/$DB_NAME"
+echo "4. 防火墙已开放 5432 端口"
 echo "=========================================="
