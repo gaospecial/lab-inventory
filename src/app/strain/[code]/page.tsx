@@ -1,10 +1,10 @@
 import { query } from '@/lib/db';
 import { notFound } from 'next/navigation';
-import { Beaker, MapPin, Calendar, User, ShieldCheck, Thermometer, FlaskConical, Globe, BookOpen, Activity, Tag, FileText } from 'lucide-react';
+import { Beaker, MapPin, Calendar, User, ShieldCheck, Thermometer, FlaskConical, Globe, BookOpen, Activity, Tag, FileText, Edit } from 'lucide-react';
 import DataMatrixLabel from '@/components/DataMatrixLabel';
 import PrintButton from '@/components/PrintButton';
-// import Link from 'next/link';
-// import { Edit } from 'lucide-react';
+import Link from 'next/link';
+import { getCurrentUser, canEditStrain } from '@/lib/auth';
 
 // Define a type for our strain data based on the new schema
 type Strain = {
@@ -79,10 +79,18 @@ export async function generateMetadata(props: { params: Promise<{ code: string }
 }
 
 // Server Component
-export default async function StrainDetail(props: { params: Promise<{ code: string }> }) {
+export default async function StrainDetail(props: { 
+  params: Promise<{ code: string }>;
+  searchParams: Promise<{ message?: string; error?: string; success?: string }>;
+}) {
   const params = await props.params;
+  const searchParams = await props.searchParams;
   const { code } = params;
   const decodedCode = decodeURIComponent(code);
+
+  // 获取当前用户及权限
+  const user = await getCurrentUser();
+  const canEdit = user ? await canEditStrain(user, decodedCode) : false;
 
   try {
     const result = await query(
@@ -115,6 +123,29 @@ export default async function StrainDetail(props: { params: Promise<{ code: stri
           <div className="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
             <div className="h-2 bg-blue-600"></div>
             
+            {/* 成功/错误消息 */}
+            {searchParams.success === 'true' && (
+              <div className="px-8 pt-6 bg-green-50">
+                <div className="p-4 rounded-lg bg-green-100 text-green-800">
+                  保存成功
+                </div>
+              </div>
+            )}
+            {searchParams.error === 'save_failed' && (
+              <div className="px-8 pt-6 bg-red-50">
+                <div className="p-4 rounded-lg bg-red-100 text-red-800">
+                  保存失败，请重试
+                </div>
+              </div>
+            )}
+            {searchParams.error && searchParams.error !== 'save_failed' && (
+              <div className="px-8 pt-6 bg-red-50">
+                <div className="p-4 rounded-lg bg-red-100 text-red-800">
+                  {decodeURIComponent(searchParams.error)}
+                </div>
+              </div>
+            )}
+            
             <div className="p-8">
               {/* Header */}
               <div className="flex justify-between items-start mb-8 border-b border-gray-100 pb-6">
@@ -143,8 +174,8 @@ export default async function StrainDetail(props: { params: Promise<{ code: stri
                   <div className={`h-12 w-12 rounded-full flex items-center justify-center ${strain.status_name === '现货' ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
                       <Beaker size={24} />
                   </div>
-                   {/* Edit link temporarily disabled due to schema change */}
-                  {/* {user && (
+                  {/* Edit link - 根据权限显示 */}
+                  {canEdit && (
                     <Link 
                       href={`/strain/${strain.strain_code}/edit`}
                       className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
@@ -152,7 +183,7 @@ export default async function StrainDetail(props: { params: Promise<{ code: stri
                       <Edit size={16} />
                       编辑
                     </Link>
-                  )} */}
+                  )}
                 </div>
               </div>
 
@@ -265,10 +296,20 @@ export default async function StrainDetail(props: { params: Promise<{ code: stri
               </div>
 
               <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100">
-                  <h3 className="text-blue-900 font-bold mb-2">需要修改信息?</h3>
+                <h3 className="text-blue-900 font-bold mb-2">需要修改信息?</h3>
+                {canEdit ? (
                   <p className="text-blue-700 text-sm mb-4">
-                      请联系管理员更新数据。
+                    您有权限编辑此菌株信息，请点击上方的"编辑"按钮。
                   </p>
+                ) : user ? (
+                  <p className="text-blue-700 text-sm mb-4">
+                    您当前无权限编辑此菌株，请联系全局管理员获取权限。
+                  </p>
+                ) : (
+                  <p className="text-blue-700 text-sm mb-4">
+                    请登录后联系管理员获取编辑权限。
+                  </p>
+                )}
               </div>
           </div>
 
