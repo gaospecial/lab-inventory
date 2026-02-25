@@ -1,19 +1,31 @@
-import { type NextRequest } from 'next/server'
-import { updateSession } from '@/utils/supabase/middleware'
+import { NextResponse, type NextRequest } from 'next/server';
+import jwt from 'jsonwebtoken';
 
-export async function middleware(request: NextRequest) {
-  return await updateSession(request)
+const JWT_SECRET = process.env.JWT_SECRET!;
+
+export function middleware(request: NextRequest) {
+  // Check if the request is for an edit page
+  if (request.nextUrl.pathname.includes('/edit')) {
+    const token = request.cookies.get('auth-token')?.value;
+
+    if (!token) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/login';
+      return NextResponse.redirect(url);
+    }
+
+    try {
+      jwt.verify(token, JWT_SECRET);
+    } catch {
+      const url = request.nextUrl.clone();
+      url.pathname = '/login';
+      return NextResponse.redirect(url);
+    }
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * Feel free to modify this pattern to include more paths.
-     */
-    '/((?!_next/static|_next/image|favicon.ico|.*\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-  ],
-}
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\.png$).*)'],
+};

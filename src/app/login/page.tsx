@@ -18,6 +18,18 @@ export default async function LoginPage(props: {
         <form className="mt-8 space-y-6">
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
+              <label htmlFor="name" className="sr-only">
+                姓名（注册时填写）
+              </label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                placeholder="姓名（注册时填写）"
+              />
+            </div>
+            <div>
               <label htmlFor="email-address" className="sr-only">
                 邮箱地址
               </label>
@@ -27,7 +39,7 @@ export default async function LoginPage(props: {
                 type="email"
                 autoComplete="email"
                 required
-                className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                className="relative block w-full appearance-none rounded-none border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                 placeholder="邮箱地址"
               />
             </div>

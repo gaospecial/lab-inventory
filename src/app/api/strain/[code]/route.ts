@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/server';
+import { query } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
@@ -7,22 +7,25 @@ export async function GET(
 ) {
   const params = await props.params;
   const { code } = params;
-  const supabase = await createClient();
 
   const decodedCode = decodeURIComponent(code);
-  const { data: strain, error } = await supabase
-    .from('mgsc_germplasm')
-    .select('*')
-    .eq('strain_code', decodedCode)
-    .single();
 
-  if (error) {
-    // If code matches the format but not found, Supabase returns error code PGRST116
-    if (error.code === 'PGRST116') {
-        return NextResponse.json({ error: 'Strain not found' }, { status: 404 });
+  try {
+    const result = await query(
+      'SELECT * FROM strains WHERE strain_code = $1',
+      [decodedCode]
+    );
+
+    if (result.rows.length === 0) {
+      return NextResponse.json({ error: 'Strain not found' }, { status: 404 });
     }
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
 
-  return NextResponse.json(strain);
+    return NextResponse.json(result.rows[0]);
+  } catch (error) {
+    console.error('Database error:', error);
+    return NextResponse.json(
+      { error: 'Database error' },
+      { status: 500 }
+    );
+  }
 }

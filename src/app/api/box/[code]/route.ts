@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/server';
+import { query } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
@@ -8,17 +8,19 @@ export async function GET(
   const params = await props.params;
   const { code } = params;
   const decodedBox = decodeURIComponent(code);
-  const supabase = await createClient();
 
-  const { data: strains, error } = await supabase
-    .from('strains')
-    .select('*')
-    .ilike('location', `%${decodedBox}%`)
-    .order('strain_code', { ascending: true });
+  try {
+    const result = await query(
+      'SELECT * FROM strains WHERE location ILIKE $1 ORDER BY strain_code ASC',
+      [`%${decodedBox}%`]
+    );
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(result.rows || []);
+  } catch (error) {
+    console.error('Database error:', error);
+    return NextResponse.json(
+      { error: 'Database error' },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json(strains || []);
 }

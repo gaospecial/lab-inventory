@@ -1,54 +1,56 @@
-'use server'
+'use server';
 
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
-import { createClient } from '@/utils/supabase/server'
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+import { query } from '@/lib/db';
+import { getCurrentUser } from '@/lib/auth';
 
 export async function updateStrain(formData: FormData) {
-  const supabase = await createClient()
-
   // Authenticate user
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await getCurrentUser();
 
   if (!user) {
-    redirect('/login')
+    redirect('/login');
   }
 
-  const strain_code = formData.get('strain_code') as string
-  const name = formData.get('name') as string
-  const type = formData.get('type') as string
-  const location = formData.get('location') as string
-  const owner = formData.get('owner') as string
-  const admin = formData.get('admin') as string
-  const description = formData.get('description') as string
+  const strain_code = formData.get('strain_code') as string;
+  const name_chinese = formData.get('name_chinese') as string;
+  const name_latin = formData.get('name_latin') as string;
+  const location = formData.get('location') as string;
+  const resource_owner = formData.get('resource_owner') as string;
+  const contact_person = formData.get('contact_person') as string;
+  const description = formData.get('description') as string;
 
-  // Note: Edit functionality needs full refactor for new schema fields.
-  // Updating table name only for now.
-  const { error, count } = await supabase
-    .from('mgsc_germplasm')
-    .update({
-      // name, // Field mismatch likely
-      // type,
-      // location,
-      // owner,
-      // admin,
-      // description,
-      // updated_at: new Date().toISOString(),
-    }, { count: 'exact' })
-    .eq('strain_code', strain_code)
+  try {
+    const result = await query(
+      `UPDATE strains 
+       SET name_chinese = $1, 
+           name_latin = $2, 
+           location = $3, 
+           resource_owner = $4, 
+           contact_person = $5, 
+           description = $6,
+           updated_at = NOW()
+       WHERE strain_code = $7`,
+      [
+        name_chinese,
+        name_latin,
+        location,
+        resource_owner,
+        contact_person,
+        description,
+        strain_code,
+      ]
+    );
 
-  if (error) {
-    console.error('Error updating strain:', error)
-    redirect(`/strain/${strain_code}/edit?error=Update failed: ${error.message}`)
+    if (result.rowCount === 0) {
+      redirect(`/strain/${strain_code}/edit?error=Strain not found or no permission`);
+    }
+
+    revalidatePath(`/strain/${strain_code}`);
+    redirect(`/strain/${strain_code}`);
+  } catch (error) {
+    console.error('Error updating strain:', error);
+    redirect(`/strain/${strain_code}/edit?error=Update failed`);
   }
-
-  if (count === 0) {
-    console.error('No rows updated. Check RLS policies or strain_code mismatch.')
-    redirect(`/strain/${strain_code}/edit?error=No permission to update or strain not found (RLS)`)
-  }
-
-  revalidatePath(`/strain/${strain_code}`)
-  redirect(`/strain/${strain_code}`)
 }
