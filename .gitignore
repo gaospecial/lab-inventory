@@ -41,3 +41,7 @@ next-env.d.ts
 
 # data
 data/
+
+# Claude Code (个人配置，不提交)
+.claude/settings.local.json
+.claude/agent-memory/
