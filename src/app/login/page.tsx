@@ -3,6 +3,8 @@
 import { useState, use } from 'react'
 import { login, signup } from './actions'
 import { Beaker, UserPlus, LogIn, Mail, Lock, User } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import Link from 'next/link'
 
 export default function LoginPage(props: {
   searchParams: Promise<{ message: string; error: string }>
@@ -33,11 +35,12 @@ export default function LoginPage(props: {
             <button
               type="button"
               onClick={() => setIsLogin(true)}
-              className={`flex-1 py-4 text-sm font-medium flex items-center justify-center gap-2 transition-colors ${
-                isLogin 
-                  ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50' 
+              className={cn(
+                'flex-1 py-4 text-sm font-medium flex items-center justify-center gap-2 transition-colors',
+                isLogin
+                  ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
                   : 'text-gray-500 hover:text-gray-700'
-              }`}
+              )}
             >
               <LogIn size={18} />
               登录
@@ -45,11 +48,12 @@ export default function LoginPage(props: {
             <button
               type="button"
               onClick={() => setIsLogin(false)}
-              className={`flex-1 py-4 text-sm font-medium flex items-center justify-center gap-2 transition-colors ${
-                !isLogin 
-                  ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50' 
+              className={cn(
+                'flex-1 py-4 text-sm font-medium flex items-center justify-center gap-2 transition-colors',
+                !isLogin
+                  ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
                   : 'text-gray-500 hover:text-gray-700'
-              }`}
+              )}
             >
               <UserPlus size={18} />
               注册
@@ -195,12 +199,12 @@ export default function LoginPage(props: {
 
         {/* Back to home */}
         <div className="mt-6 text-center">
-          <a
+          <Link
             href="/"
             className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
           >
             ← 返回首页
-          </a>
+          </Link>
         </div>
       </div>
     </div>

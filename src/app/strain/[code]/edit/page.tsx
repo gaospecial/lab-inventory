@@ -82,7 +82,13 @@ export default async function EditStrainPage(props: { params: Promise<{ code: st
   let strain;
   try {
     const result = await query(
-      'SELECT * FROM strains WHERE strain_code = $1',
+      `SELECT strain_code, name_chinese, name_latin, catalog_name, taxon_kingdom, taxon_phylum,
+       taxon_class, taxon_order, taxon_family, taxon_genus, taxon_species, country, province,
+       collection_location, collection_date, isolation_date, isolated_by, source_history,
+       isolation_substrate, resource_owner, save_method, provide_format, status_name, purpose,
+       cultivation_temperature, medium_type, oxygen_requirement, biohazard_level, type_strain,
+       original_number, rdna16s_login_number, create_time, characteristics, contact_person, description
+       FROM strains WHERE strain_code = $1`,
       [decodedCode]
     );
 

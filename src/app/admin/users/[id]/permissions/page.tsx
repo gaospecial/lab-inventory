@@ -2,7 +2,7 @@ import { query } from '@/lib/db';
 import { redirect, notFound } from 'next/navigation';
 import { getCurrentUser } from '@/lib/auth';
 import Link from 'next/link';
-import { ArrowLeft, Plus, Trash2, Search } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import { addPermission, removePermission } from './actions';
 
 export const metadata = {

@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import QRCode from 'react-qr-code';
 import { Printer } from 'lucide-react';
+import { escapeHtml } from '@/lib/utils';
 
 interface QRCodeLabelProps {
   value: string;
@@ -28,6 +29,9 @@ export default function QRCodeLabel({ value, label, subLabel, type = 'strain' }:
     const svgElement = printContent.querySelector('svg');
     const svgHtml = svgElement ? svgElement.outerHTML : '';
 
+    const safeLabel = escapeHtml(label);
+    const safeSubLabel = escapeHtml(subLabel || '');
+
     let printBody = '';
 
     if (type === 'strain') {
@@ -38,15 +42,15 @@ export default function QRCodeLabel({ value, label, subLabel, type = 'strain' }:
           <div class="label-rect">
             <div class="qr-code-rect">${svgHtml}</div>
             <div class="info-rect">
-              <div class="label-main">${label}</div>
-              <div class="label-sub">${subLabel || ''}</div>
+              <div class="label-main">${safeLabel}</div>
+              <div class="label-sub">${safeSubLabel}</div>
             </div>
           </div>
 
           <!-- Circular Label for Tube Cap (e.g., 10mm-12mm diameter) -->
           <div class="label-circle">
             <div class="circle-content">
-              <div class="circle-text">${label}</div>
+              <div class="circle-text">${safeLabel}</div>
             </div>
           </div>
         </div>
@@ -58,8 +62,8 @@ export default function QRCodeLabel({ value, label, subLabel, type = 'strain' }:
           <div class="label-box">
             <div class="qr-code-box">${svgHtml}</div>
             <div class="info-box">
-              <div class="box-title">${label}</div>
-              <div class="box-sub">${subLabel || ''}</div>
+              <div class="box-title">${safeLabel}</div>
+              <div class="box-sub">${safeSubLabel}</div>
             </div>
           </div>
         </div>
@@ -70,7 +74,7 @@ export default function QRCodeLabel({ value, label, subLabel, type = 'strain' }:
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Print Label - ${label}</title>
+          <title>Print Label - ${safeLabel}</title>
           <style>
             @media print {
               body { margin: 0; padding: 0; }

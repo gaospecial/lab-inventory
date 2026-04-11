@@ -1,7 +1,6 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 import { query } from '@/lib/db';
 import { getCurrentUser } from '@/lib/auth';
 

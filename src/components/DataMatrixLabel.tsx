@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useMemo } from 'react';
 import bwipjs from 'bwip-js';
 import { Printer } from 'lucide-react';
+import { escapeHtml } from '@/lib/utils';
 
 interface DataMatrixLabelProps {
   value: string;
@@ -24,11 +25,10 @@ export default function DataMatrixLabel({
   type = 'strain' 
 }: DataMatrixLabelProps) {
   const printRef = useRef<HTMLDivElement>(null);
-  const [svgContent, setSvgContent] = useState<string>('');
 
-  useEffect(() => {
+  const svgContent = useMemo(() => {
     try {
-      // @ts-ignore: bwip-js types are missing toSVG definition
+      // @ts-expect-error: bwip-js types are missing toSVG definition
       const svg = (bwipjs as any).toSVG({
         bcid: 'datamatrix',
         text: value,
@@ -37,9 +37,10 @@ export default function DataMatrixLabel({
         padding: 5,
         backgroundcolor: 'ffffff',
       });
-      setSvgContent(svg);
+      return svg;
     } catch (e) {
       console.error('Error generating Data Matrix:', e);
+      return '';
     }
   }, [value]);
 
@@ -57,6 +58,12 @@ export default function DataMatrixLabel({
     const svgElement = printContent.querySelector('svg');
     const svgHtml = svgElement ? svgElement.outerHTML : '';
 
+    const safeLabel = escapeHtml(label);
+    const safeSubLabel = escapeHtml(subLabel || '');
+    const safeLatinName = escapeHtml(latinName || '');
+    const safeIsolatedBy = escapeHtml(isolatedBy || '');
+    const safeCollectionDate = escapeHtml(collectionDate || '');
+
     let printBody = '';
 
     if (type === 'strain') {
@@ -67,12 +74,12 @@ export default function DataMatrixLabel({
           <div class="label-rect">
             <div class="qr-code-rect">${svgHtml}</div>
             <div class="info-rect">
-              <div class="label-latin">${latinName || ''}</div>
-              <div class="label-main">${label}</div>
+              <div class="label-latin">${safeLatinName}</div>
+              <div class="label-main">${safeLabel}</div>
               <div class="label-meta">
-                 ${isolatedBy ? `<span>${isolatedBy}</span>` : ''}
+                 ${safeIsolatedBy ? `<span>${safeIsolatedBy}</span>` : ''}
                  ${(isolatedBy && collectionDate) ? `<span class="separator">|</span>` : ''}
-                 ${collectionDate ? `<span>${collectionDate}</span>` : ''}
+                 ${safeCollectionDate ? `<span>${safeCollectionDate}</span>` : ''}
               </div>
             </div>
           </div>
@@ -81,7 +88,7 @@ export default function DataMatrixLabel({
           <div class="label-circle">
             <div class="circle-content">
               <div class="circle-qr">${svgHtml}</div>
-              <div class="circle-text">${label.replace(/^MGSC\s+/, '')}</div>
+              <div class="circle-text">${safeLabel.replace(/^MGSC\s+/, '')}</div>
             </div>
           </div>
         </div>
@@ -93,8 +100,8 @@ export default function DataMatrixLabel({
           <div class="label-box">
             <div class="qr-code-box">${svgHtml}</div>
             <div class="info-box">
-              <div class="box-title">${label}</div>
-              <div class="box-sub">${subLabel || ''}</div>
+              <div class="box-title">${safeLabel}</div>
+              <div class="box-sub">${safeSubLabel}</div>
             </div>
           </div>
         </div>
@@ -105,7 +112,7 @@ export default function DataMatrixLabel({
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Print Label - ${label}</title>
+          <title>Print Label - ${safeLabel}</title>
           <style>
             @media print {
               body { margin: 0; padding: 0; }

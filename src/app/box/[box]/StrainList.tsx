@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Search, Tag } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 // Updated Strain type definition based on new schema
 type Strain = {
@@ -105,7 +106,7 @@ export default function StrainList({ strains }: { strains: Strain[] }) {
                       {strain.create_time ? new Date(strain.create_time).toISOString().split('T')[0] : '-'}
                     </td>
                      <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500 hidden lg:table-cell">
-                        <span className={`px-2 py-0.5 rounded text-xs ${strain.status_name === '现货' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                        <span className={cn('px-2 py-0.5 rounded text-xs', strain.status_name === '现货' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600')}>
                             {strain.status_name || '-'}
                         </span>
                     </td>
