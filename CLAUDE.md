@@ -18,7 +18,9 @@ src/
 ├── app/                          # Next.js App Router
 │   ├── api/strain/[code]/        # 菌株 API（字段白名单防泄露）
 │   ├── api/box/[code]/           # 盒子 API
-│   ├── admin/users/              # 用户管理（仅 admin）
+│   ├── admin/
+│   │   └── users/                # 用户管理（仅 admin）
+│   │       └── [id]/permissions/ # 用户权限管理
 │   ├── login/                    # 登录页和 actions
 │   ├── strain/[code]/            # 菌株详情和编辑页
 │   └── box/[box]/                # 盒子位置视图
