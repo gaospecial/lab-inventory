@@ -28,8 +28,7 @@ export default function DataMatrixLabel({
 
   const svgContent = useMemo(() => {
     try {
-      // @ts-expect-error: bwip-js types are missing toSVG definition
-      const svg = (bwipjs as any).toSVG({
+      const svg = (bwipjs as unknown as { toSVG: (opts: Record<string, unknown>) => string }).toSVG({
         bcid: 'datamatrix',
         text: value,
         scale: 5,
