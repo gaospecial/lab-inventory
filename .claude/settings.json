@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(src/**)",
+      "Read(scripts/**)",
+      "Read(public/**)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run dev:*)"
+    ],
+    "deny": [
+      "Read(.env*)"
+    ]
+  },
+  "attribution": {
+    "commit": "Co-Authored-By: Claude <noreply@anthropic.com>",
+    "pr": "Generated with [Claude Code](https://claude.ai/code)"
+  },
+  "env": {
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "80"
+  }
+}
